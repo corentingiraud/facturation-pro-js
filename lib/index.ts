@@ -1,0 +1,4 @@
+export const helloWorld = () => {
+  // tslint:disable-next-line: no-console
+  console.log('Hello');
+};

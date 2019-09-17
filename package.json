@@ -1,0 +1,33 @@
+{
+  "name": "facturation-pro",
+  "version": "1.0.0",
+  "description": "A small TS/JS client for FacturationPro API",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kistora/facturation-pro-js.git"
+  },
+  "keywords": [
+    "facturationpro",
+    "facturation",
+    "pro"
+  ],
+  "author": "Corentin GIRAUD",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kistora/facturation-pro-js/issues"
+  },
+  "homepage": "https://github.com/kistora/facturation-pro-js#readme",
+  "devDependencies": {
+    "tslint": "^5.19.0",
+    "typescript": "^3.5.3"
+  },
+  "dependencies": {
+    "axios": "^0.19.0",
+    "client-oauth2": "^4.2.5"
+  }
+}

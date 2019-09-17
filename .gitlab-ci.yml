@@ -1,0 +1,9 @@
+image: node:alpine
+
+stages:
+  - test
+
+test:
+  stage: test
+  script:
+    - npm i && npm run lint
