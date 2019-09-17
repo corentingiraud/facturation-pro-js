@@ -1,0 +1,33 @@
+export interface Customer {
+  account_code?: string;
+  api_custom?: string;
+  api_id?: number;
+  category_id?: number;
+  city?: string;
+  civility?: string;
+  company_name?: string;
+  country?: string;
+  currency?: string;
+  default_vat?: number;
+  discount?: number;
+  email?: string;
+  fax?: string;
+  first_name?: string;
+  id?: number;
+  individual?: boolean;
+  language?: string;
+  last_invoiced_on?: Date;
+  last_name?: string;
+  mobile?: string;
+  pay_before?: string;
+  penalty?: number;
+  phone?: string;
+  short_name?: string;
+  siret?: string;
+  street?: string;
+  validity?: number;
+  vat_exemption?: string;
+  vat_number?: string;
+  website?: string;
+  zip_code?: string;
+}
