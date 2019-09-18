@@ -2,7 +2,6 @@ import ClientOAuth2 from 'client-oauth2';
 import axios, { AxiosResponse, AxiosInstance } from 'axios';
 import { Customer } from './models/customer';
 import { Invoice } from './models/invoice';
-import curlirize from 'axios-curlirize';
 import { Account } from './models/account';
 
 const ACCESS_TOKEN_URI = 'https://www.facturation.pro/oauth/token';
@@ -38,8 +37,6 @@ class FacturationPro {
     this.axiosInstance.defaults.headers.common = {
       'User-Agent': `${options.header.appName} (${options.header.email})`,
     };
-
-    curlirize(this.axiosInstance);
   }
 
   public async getTokenFromUri(uri: string) {
