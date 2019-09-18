@@ -51,7 +51,7 @@ class FacturationPro {
   }
 
   public async createCustomer(firmId: number, customer: Customer, accessToken: string) {
-    return axios.post<Customer>(`${API_BASE_URL}/firms/${firmId}/customers.json?access_token=${accessToken}`)
+    return axios.post<Customer>(`${API_BASE_URL}/firms/${firmId}/customers.json?access_token=${accessToken}`, customer)
     .then((res) => this.responseHandler<Customer>(res));
   }
 
@@ -61,7 +61,7 @@ class FacturationPro {
   }
 
   public async createInvoice(firmId: number, invoice: Invoice, accessToken: string) {
-    return axios.post(`${API_BASE_URL}/firms/${firmId}/invoices.json?access_token=${accessToken}`)
+    return axios.post(`${API_BASE_URL}/firms/${firmId}/invoices.json?access_token=${accessToken}`, invoice)
       .then((res) => this.responseHandler<Invoice>(res));
   }
 
