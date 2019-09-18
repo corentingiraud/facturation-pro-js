@@ -13,15 +13,10 @@ interface FacturationProOptions {
   clientSecret: string;
   redirectUri: string;
   scope: 'read' | 'read_write';
-  header: {
-    appName: string;
-    email: string;
-  };
 }
 
 class FacturationPro {
   private facturationOauth2: ClientOAuth2;
-  private axiosInstance: AxiosInstance;
 
   constructor(options: FacturationProOptions) {
     this.facturationOauth2 = new ClientOAuth2({
@@ -32,11 +27,6 @@ class FacturationPro {
       redirectUri: options.redirectUri,
       scopes: [options.scope],
     });
-
-    this.axiosInstance = axios.create();
-    this.axiosInstance.defaults.headers.common = {
-      'User-Agent': `${options.header.appName} (${options.header.email})`,
-    };
   }
 
   public async getTokenFromUri(uri: string) {
@@ -49,29 +39,29 @@ class FacturationPro {
   }
 
   public async getCustomersByFirmId(firmId: number, options: { api_id: number }, accessToken: string) {
-    return this.axiosInstance.get<Customer[]>(
+    return axios.get<Customer[]>(
       `${API_BASE_URL}/firms/${firmId}/customers.json?access_token=${accessToken}&api_id=${options.api_id}`)
       .then((res) => this.responseHandler<Customer[]>(res));
   }
 
   public async getFirms(accessToken: string) {
-    const account = await this.axiosInstance.get(`${API_BASE_URL}/account.json?access_token=${accessToken}`)
+    const account = await axios.get(`${API_BASE_URL}/account.json?access_token=${accessToken}`)
       .then((res) => this.responseHandler<Account>(res));
     return account.firms;
   }
 
   public async createCustomer(firmId: number, customer: Customer, accessToken: string) {
-    return this.axiosInstance.post<Customer>(`${API_BASE_URL}/firms/${firmId}/customers.json?access_token=${accessToken}`, customer)
+    return axios.post<Customer>(`${API_BASE_URL}/firms/${firmId}/customers.json?access_token=${accessToken}`, customer)
     .then((res) => this.responseHandler<Customer>(res));
   }
 
   public async getInvoicesByFirmId(firmId: number, accessToken: string) {
-    return this.axiosInstance.get(`${API_BASE_URL}/firms/${firmId}/invoices.json?access_token=${accessToken}`)
+    return axios.get(`${API_BASE_URL}/firms/${firmId}/invoices.json?access_token=${accessToken}`)
       .then((res) => this.responseHandler<Invoice[]>(res));
   }
 
   public async createInvoice(firmId: number, invoice: Invoice, accessToken: string) {
-    return this.axiosInstance.post(`${API_BASE_URL}/firms/${firmId}/invoices.json?access_token=${accessToken}`, invoice)
+    return axios.post(`${API_BASE_URL}/firms/${firmId}/invoices.json?access_token=${accessToken}`, invoice)
       .then((res) => this.responseHandler<Invoice>(res));
   }
 
