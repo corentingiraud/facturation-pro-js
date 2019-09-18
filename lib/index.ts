@@ -48,9 +48,9 @@ class FacturationPro {
     return token.refresh();
   }
 
-  public async getCustomersByFirmId(firmId: number, options: { app_id: number }, accessToken: string) {
+  public async getCustomersByFirmId(firmId: number, options: { api_id: number }, accessToken: string) {
     return this.axiosInstance.get<Customer[]>(
-      `${API_BASE_URL}/firms/${firmId}/customers.json?access_token=${accessToken}&app_id=${options.app_id}`)
+      `${API_BASE_URL}/firms/${firmId}/customers.json?access_token=${accessToken}&api_id=${options.api_id}`)
       .then((res) => this.responseHandler<Customer[]>(res));
   }
 
