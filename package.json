@@ -1,6 +1,6 @@
 {
   "name": "facturation-pro",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "A small TS/JS client for FacturationPro API",
   "main": "dist/index.js",
   "scripts": {
