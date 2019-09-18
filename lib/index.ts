@@ -7,7 +7,7 @@ import { Account } from './models/account';
 
 const ACCESS_TOKEN_URI = 'https://www.facturation.pro/oauth/token';
 const AUTHORIZATION_URI = 'https://www.facturation.pro/oauth/authorize';
-const API_BASE_URL = 'https://www.facturation.pro/';
+const API_BASE_URL = 'https://www.facturation.pro';
 
 interface FacturationProOptions {
   clientId: string;
