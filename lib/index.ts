@@ -14,6 +14,10 @@ interface FacturationProOptions {
   clientSecret: string;
   redirectUri: string;
   scope: 'read' | 'read_write';
+  header: {
+    appName: string;
+    email: string;
+  };
 }
 
 class FacturationPro {
