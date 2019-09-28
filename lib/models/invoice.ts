@@ -6,6 +6,7 @@ export interface Invoice {
   category_id?: string;
   currency?: string;
   customer_id?: number;
+  created_at?: Date;
   external_ref?: string;
   discount?: string;
   draft?: boolean;
@@ -29,6 +30,7 @@ export interface Invoice {
   title?: string;
   total?: string;
   paid_in_euros?: string;
+  updated_at?: Date;
   vat_exemption?: string;
   items?: Item[];
 }
