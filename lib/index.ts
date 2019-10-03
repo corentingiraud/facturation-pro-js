@@ -3,6 +3,7 @@ import axios, { AxiosResponse, AxiosInstance } from 'axios';
 import { Customer } from './models/customer';
 import { Invoice } from './models/invoice';
 import { Account } from './models/account';
+import { Credit } from './models/credit';
 
 const ACCESS_TOKEN_URI = 'https://www.facturation.pro/oauth/token';
 const AUTHORIZATION_URI = 'https://www.facturation.pro/oauth/authorize';
@@ -63,6 +64,11 @@ class FacturationPro {
   public async createInvoice(firmId: number, invoice: Invoice, accessToken: string) {
     return axios.post(`${API_BASE_URL}/firms/${firmId}/invoices.json?access_token=${accessToken}`, invoice)
       .then((res) => this.responseHandler<Invoice>(res));
+  }
+
+  public async createCredit(firmId: number, invoiceId: number, accessToken: string) {
+    return axios.post(`${API_BASE_URL}/firms/${firmId}/invoices/${invoiceId}/refund.json?access_token=${accessToken}`)
+      .then((res) => this.responseHandler<Credit>(res));
   }
 
   private responseHandler<T>(axiosResponse: AxiosResponse): T {
