@@ -30,4 +30,6 @@ export interface Customer {
   vat_number?: string;
   website?: string;
   zip_code?: string;
+  sepa_iban?: string;
+  sepa_bic?: string;
 }
