@@ -79,11 +79,11 @@ class FacturationPro {
       },
     };
     try {
-      const res = await axios.get('https://www.facturation.pro/firms/1/invoices.json', reqConfig);
+      await axios.get('https://www.facturation.pro/firms/1/invoices.json', reqConfig);
     } catch (e) {
       if (e.isAxiosError && e.response && e.response.headers) {
         const requestRemaining = parseInt(e.response.headers['x-ratelimit-remaining'], 10);
-        return requestRemaining > requestNumber;
+        return requestRemaining >= requestNumber;
       }
     }
     return false;

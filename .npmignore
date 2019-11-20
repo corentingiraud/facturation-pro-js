@@ -4,3 +4,5 @@ tslint.json
 tsconfig.json
 .gitignore
 .editorconfig
+.gitlab-ci.yml
+.idea
