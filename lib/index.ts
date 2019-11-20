@@ -1,5 +1,5 @@
 import ClientOAuth2 from 'client-oauth2';
-import axios, { AxiosResponse, AxiosInstance, AxiosRequestConfig } from 'axios';
+import axios, { AxiosResponse, AxiosInstance, AxiosRequestConfig, ResponseType } from 'axios';
 import { Customer } from './models/customer';
 import { Invoice } from './models/invoice';
 import { Account } from './models/account';
@@ -94,13 +94,20 @@ class FacturationPro {
     return this.requestRemaining >= requestNumber;
   }
 
-  public async download(firmId: number, invoiceId: number, accessToken: string) {
-    this.requestRemaining -= 1;
+  public async download(
+          firmId: number,
+          invoiceId: number,
+          responseType: ResponseType | null = null,
+          accessToken: string) {
+    let config = {};
+    if (responseType) {
+      config = {
+        responseType,
+      };
+    }
     return axios.get(
       `${API_BASE_URL}/firms/${firmId}/invoices/${invoiceId}.pdf?original=1&access_token=${accessToken}`,
-      {
-        responseType: 'arraybuffer',
-      },
+      config,
     );
   }
 
