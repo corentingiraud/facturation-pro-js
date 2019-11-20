@@ -17,8 +17,9 @@ You must have a npm account and have appropriate right to the facturation-pro mo
 Follow these steps:
 
 - `npm login`
+- Commit your changes but don't push it yet
 - `npm version vX.X.X`
-- Commit your changes and push it to this repository
+- Push to this repository `git push origin master --tags`
 - `npm publish`
 
 After that. Don't forget to run `npm update facturation-pro` on your project.

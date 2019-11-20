@@ -29,6 +29,17 @@ class FacturationPro {
       redirectUri: options.redirectUri,
       scopes: [options.scope],
     });
+    axios.interceptors.response.use((response) => {
+      if (response.headers && response.headers['x-ratelimit-remaining']) {
+        this.requestRemaining = parseInt(response.headers['x-ratelimit-remaining'], 10);
+      }
+      return response;
+    }, (error) => {
+      if (error.isAxiosError && error.response && error.response.headers) {
+        this.requestRemaining = parseInt(error.response.headers['x-ratelimit-remaining'], 10);
+      }
+      return Promise.reject(error);
+    });
   }
 
   public async getTokenFromUri(uri: string) {
@@ -45,45 +56,38 @@ class FacturationPro {
   public async getCustomersByFirmId(firmId: number, options: { api_id: number }, accessToken: string) {
     return axios.get<Customer[]>(
             `${API_BASE_URL}/firms/${firmId}/customers.json?access_token=${accessToken}&api_id=${options.api_id}`)
-    .then((res) => this.responseHandler<Customer[]>(res))
-    .catch(this.errorHandler);
+    .then((res) => this.responseHandler<Customer[]>(res));
   }
 
   public async getFirms(accessToken: string) {
     const account = await axios.get(`${API_BASE_URL}/account.json?access_token=${accessToken}`)
-    .then((res) => this.responseHandler<Account>(res))
-    .catch(this.errorHandler);
+    .then((res) => this.responseHandler<Account>(res));
     return account ? account.firms : [];
   }
 
   public async createCustomer(firmId: number, customer: Customer, accessToken: string) {
     return axios.post<Customer>(`${API_BASE_URL}/firms/${firmId}/customers.json?access_token=${accessToken}`, customer)
-    .then((res) => this.responseHandler<Customer>(res))
-    .catch(this.errorHandler);
+    .then((res) => this.responseHandler<Customer>(res));
   }
 
   public async getInvoicesByFirmId(firmId: number, accessToken: string) {
     return axios.get(`${API_BASE_URL}/firms/${firmId}/invoices.json?access_token=${accessToken}`)
-    .then((res) => this.responseHandler<Invoice[]>(res))
-    .catch(this.errorHandler);
+    .then((res) => this.responseHandler<Invoice[]>(res));
   }
 
   public async getInvoiceById(firmId: number, invoiceId: number, accessToken: string) {
     return axios.get(`${API_BASE_URL}/firms/${firmId}/invoices/${invoiceId}.json?access_token=${accessToken}`)
-    .then((res) => this.responseHandler<Invoice>(res))
-    .catch(this.errorHandler);
+    .then((res) => this.responseHandler<Invoice>(res));
   }
 
   public async createInvoice(firmId: number, invoice: Invoice, accessToken: string) {
     return axios.post(`${API_BASE_URL}/firms/${firmId}/invoices.json?access_token=${accessToken}`, invoice)
-    .then((res) => this.responseHandler<Invoice>(res))
-    .catch(this.errorHandler);
+    .then((res) => this.responseHandler<Invoice>(res));
   }
 
   public async createCredit(firmId: number, invoiceId: number, accessToken: string) {
     return axios.post(`${API_BASE_URL}/firms/${firmId}/invoices/${invoiceId}/refund.json?access_token=${accessToken}`)
-    .then((res) => this.responseHandler<Credit>(res))
-    .catch(this.errorHandler);
+    .then((res) => this.responseHandler<Credit>(res));
   }
 
   public async checkFacturationProRateLimit(requestNumber: number) {
@@ -93,25 +97,15 @@ class FacturationPro {
   public async download(firmId: number, invoiceId: number, accessToken: string) {
     this.requestRemaining -= 1;
     return axios.get(
-            `${API_BASE_URL}/firms/${firmId}/invoices/${invoiceId}.pdf?original=1&access_token=${accessToken}`,
-            {
-              responseType: 'arraybuffer',
-            },
-    ).catch(this.errorHandler);
+      `${API_BASE_URL}/firms/${firmId}/invoices/${invoiceId}.pdf?original=1&access_token=${accessToken}`,
+      {
+        responseType: 'arraybuffer',
+      },
+    );
   }
 
   private responseHandler<T>(axiosResponse: AxiosResponse): T {
-    if (axiosResponse.headers && axiosResponse.headers['x-ratelimit-remaining']) {
-      this.requestRemaining = parseInt(axiosResponse.headers['x-ratelimit-remaining'], 10);
-    }
     return axiosResponse.data;
-  }
-
-  private errorHandler(e: any) {
-    if (e.isAxiosError && e.response && e.response.headers) {
-      this.requestRemaining = parseInt(e.response.headers['x-ratelimit-remaining'], 10);
-    }
-    throw e;
   }
 }
 
