@@ -17,6 +17,7 @@ interface FacturationProOptions {
 }
 
 class FacturationPro {
+  public requestRemaining: number = 600;
   private facturationOauth2: ClientOAuth2;
 
   constructor(options: FacturationProOptions) {
@@ -68,29 +69,26 @@ class FacturationPro {
 
   public async createCredit(firmId: number, invoiceId: number, accessToken: string) {
     return axios.post(`${API_BASE_URL}/firms/${firmId}/invoices/${invoiceId}/refund.json?access_token=${accessToken}`)
-      .then((res) => this.responseHandler<Credit>(res));
+      .then((res) => this.responseHandler<Credit>(res))
+      .catch(this.errorHandler);
   }
 
   public async checkFacturationProRateLimit(requestNumber: number) {
-    const reqConfig: AxiosRequestConfig = {
-      auth: {
-        username: 'fake@fake.com',
-        password: 'fake1234',
-      },
-    };
-    try {
-      await axios.get('https://www.facturation.pro/firms/1/invoices.json', reqConfig);
-    } catch (e) {
-      if (e.isAxiosError && e.response && e.response.headers) {
-        const requestRemaining = parseInt(e.response.headers['x-ratelimit-remaining'], 10);
-        return requestRemaining >= requestNumber;
-      }
-    }
-    return false;
+    return this.requestRemaining >= requestNumber;
   }
 
   private responseHandler<T>(axiosResponse: AxiosResponse): T {
+    if (axiosResponse.headers && axiosResponse.headers['x-ratelimit-remaining']) {
+      this.requestRemaining = parseInt(axiosResponse.headers['x-ratelimit-remaining'], 10);
+    }
     return axiosResponse.data;
+  }
+
+  private errorHandler(e: any) {
+    if (e.isAxiosError && e.response && e.response.headers) {
+      this.requestRemaining = parseInt(e.response.headers['x-ratelimit-remaining'], 10);
+    }
+    throw e;
   }
 }
 
