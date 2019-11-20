@@ -77,6 +77,15 @@ class FacturationPro {
     return this.requestRemaining >= requestNumber;
   }
 
+  public download(firmId: number, invoiceId: number, accessToken: string) {
+    return axios.get(
+    `${API_BASE_URL}/firms/${firmId}/invoices/${invoiceId}.pdf?original=1&access_token=${accessToken}`,
+      {
+        responseType: 'arraybuffer',
+      },
+    );
+  }
+
   private responseHandler<T>(axiosResponse: AxiosResponse): T {
     if (axiosResponse.headers && axiosResponse.headers['x-ratelimit-remaining']) {
       this.requestRemaining = parseInt(axiosResponse.headers['x-ratelimit-remaining'], 10);
