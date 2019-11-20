@@ -18,6 +18,7 @@ interface FacturationProOptions {
 
 class FacturationPro {
   public requestRemaining: number = 600;
+  public lastRequest: Date = new Date();
   private facturationOauth2: ClientOAuth2;
 
   constructor(options: FacturationProOptions) {
@@ -33,11 +34,14 @@ class FacturationPro {
       if (response.headers && response.headers['x-ratelimit-remaining']) {
         this.requestRemaining = parseInt(response.headers['x-ratelimit-remaining'], 10);
       }
+      this.lastRequest = new Date();
+      this.resetRequestRemainingTimeout();
       return response;
     }, (error) => {
       if (error.isAxiosError && error.response && error.response.headers) {
         this.requestRemaining = parseInt(error.response.headers['x-ratelimit-remaining'], 10);
       }
+      this.resetRequestRemainingTimeout();
       return Promise.reject(error);
     });
   }
@@ -113,6 +117,15 @@ class FacturationPro {
 
   private responseHandler<T>(axiosResponse: AxiosResponse): T {
     return axiosResponse.data;
+  }
+
+  private resetRequestRemainingTimeout() {
+    setTimeout(() => {
+      const lastRequestAddMinute = new Date(this.lastRequest.setTime(this.lastRequest.getTime() + 1000 * 60));
+      if (lastRequestAddMinute < new Date()) {
+        this.requestRemaining = 600;
+      }
+    }, 1000 * 60);
   }
 }
 
