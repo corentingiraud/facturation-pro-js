@@ -1,5 +1,5 @@
 import ClientOAuth2 from 'client-oauth2';
-import axios, { AxiosResponse, AxiosInstance } from 'axios';
+import axios, { AxiosResponse, AxiosInstance, AxiosRequestConfig } from 'axios';
 import { Customer } from './models/customer';
 import { Invoice } from './models/invoice';
 import { Account } from './models/account';
@@ -69,6 +69,24 @@ class FacturationPro {
   public async createCredit(firmId: number, invoiceId: number, accessToken: string) {
     return axios.post(`${API_BASE_URL}/firms/${firmId}/invoices/${invoiceId}/refund.json?access_token=${accessToken}`)
       .then((res) => this.responseHandler<Credit>(res));
+  }
+
+  public async checkFacturationProRateLimit(requestNumber: number) {
+    const reqConfig: AxiosRequestConfig = {
+      auth: {
+        username: 'fake@fake.com',
+        password: 'fake1234',
+      },
+    };
+    try {
+      const res = await axios.get('https://www.facturation.pro/firms/1/invoices.json', reqConfig);
+    } catch (e) {
+      if (e.isAxiosError && e.response && e.response.headers) {
+        const requestRemaining = parseInt(e.response.headers['x-ratelimit-remaining'], 10);
+        return requestRemaining > requestNumber;
+      }
+    }
+    return false;
   }
 
   private responseHandler<T>(axiosResponse: AxiosResponse): T {
