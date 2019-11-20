@@ -94,7 +94,7 @@ class FacturationPro {
     .then((res) => this.responseHandler<Credit>(res));
   }
 
-  public async checkFacturationProRateLimit(requestNumber: number) {
+  public checkFacturationProRateLimit(requestNumber: number) {
     return this.requestRemaining >= requestNumber;
   }
 
